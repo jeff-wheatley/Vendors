@@ -7,7 +7,7 @@ class Sale {
     LocalDate dayOfSale
     BigDecimal amount
 
-    static embedded = ['dayOfSale', 'amount']
+    // static embedded = ['dayOfSale', 'amount']
 
     static constraints = {
         dayOfSale(nullable: false)

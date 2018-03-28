@@ -83,6 +83,10 @@ endpoints:
         unique-names: true
 
 ---
+grails.plugin.databasemigration.updateOnStart:true
+grails.plugin.databasemigration.updateOnStartFileName:'changelog.groovy'
+
+---
 hibernate:
     cache:
         queries: false
@@ -126,3 +130,4 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+

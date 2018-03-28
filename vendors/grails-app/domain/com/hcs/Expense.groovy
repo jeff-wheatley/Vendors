@@ -10,7 +10,7 @@ class Expense {
 
     static belongsTo = [vendor: Vendor]
 
-    static embedded = ['dayOfExpense', 'amount']
+    // static embedded = ['dayOfExpense', 'amount']
 
     static constraints = {
         dayOfExpense(nullable: false)
