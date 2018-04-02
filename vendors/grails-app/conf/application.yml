@@ -83,10 +83,6 @@ endpoints:
         unique-names: true
 
 ---
-grails.plugin.databasemigration.updateOnStart:true
-grails.plugin.databasemigration.updateOnStartFileName:'changelog.groovy'
-
----
 hibernate:
     cache:
         queries: false
