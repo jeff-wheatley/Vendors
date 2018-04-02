@@ -1,6 +1,6 @@
 package com.hcs
 
-class Vendor {
+class CommissionVendor {
 
     String name
 

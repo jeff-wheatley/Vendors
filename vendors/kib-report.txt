@@ -1,0 +1,38 @@
+
+(center) Financial Report
+(center) Kentucky Business Enterprises Program
+
+Vending Facility: Transportation 120010
+Manger: Ronny Wheatley
+
+(center) Income Statement for Month Ending:_____________
+
+A. Gross Sales    | ______
+B. Cost Of Sales  | ______
+C. Gross Profit (A Minus B) |Total | _______
+D. Other Income (Coke/Pepsi Commissions)   |Add |______
+E. Direct Competition Income   |Add   |_______
+F. Adjusted Gross Profit (C + D + E)  |Total   |___________
+G. Operating Expenses (Itemized)  |Less   |______________
+   Bookkeeping___| Janitor____
+   Business Inc___|Rent_____
+   Commissions____|Stock Loss_____
+   Emp Wages______|Supplies_______
+   Emp Fringes____|Utilities_______
+   Equipment______|Other________
+   *________________________________
+H. Net Proceeds (F-G)  |Total  |______________
+I. Set-Aside (7%)  |Less  |________________
+J. Net Income   |Total  |_______________
+K. Operator
+   Manager |Total  |________________
+   Assistant |Total |_______________
+   Sub Salary |Total |_______________
+                               
+This is to verify that this report is correct to the best of my knowledge.
+
+______________________________________________________________________________
+Manager's Signature                      Date
+
+						____________________________________
+						Gallons of Coca Cola Syrup Purchased

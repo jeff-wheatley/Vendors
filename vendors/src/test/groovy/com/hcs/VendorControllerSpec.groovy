@@ -1,9 +1,9 @@
 package com.hcs
 
-import grails.testing.gorm.DomainUnitTest
+import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 
-class ExpenseSpec extends Specification implements DomainUnitTest<Expense> {
+class VendorControllerSpec extends Specification implements ControllerUnitTest<VendorController> {
 
     def setup() {
     }
