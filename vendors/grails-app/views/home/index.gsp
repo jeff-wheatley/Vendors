@@ -26,17 +26,17 @@
 
         <div id="create-cost" class="content scaffold-create" role="main">
                     <h2>Add Cost of Sale</h2>
-                    <g:hasErrors bean="${this.costOfSale}">
+                    <g:hasErrors bean="${params.costOfSaleErrors}">
                                 <ul class="errors" role="alert">
-                                    <g:eachError bean="${this.costOfSale}" var="error">
+                                    <g:eachError bean="${params.costOfSaleErrors}" var="error">
                                     <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
                                     </g:eachError>
                                 </ul>
                                 </g:hasErrors>
                     <g:form url="[controller:'home', action:'saveCostOfSale']" method="POST">
                         <fieldset class="form">
-                            <f:all bean="costOfSale"/>
-                        </fieldset>
+                        <f:all bean="costOfSale"/>
+                                                    </fieldset>
                         <fieldset class="buttons">
                             <g:submitButton name="create" class="save" action="saveCostOfSale" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                         </fieldset>
@@ -45,9 +45,9 @@
 
             <div id="create-sale" class="content scaffold-create" role="main">
             <h2>Add Sale</h2>
-            <g:hasErrors bean="${this.sale}">
+            <g:hasErrors bean="${params.saleErrors}">
             <ul class="errors" role="alert">
-                <g:eachError bean="${this.sale}" var="error">
+                <g:eachError bean="${params.saleError}" var="error">
                 <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
                 </g:eachError>
             </ul>
@@ -64,9 +64,9 @@
 
 <div id="create-commission" class="content scaffold-create" role="main">
             <h2>Add Commission</h2>
-            <g:hasErrors bean="${this.commission}">
+            <g:hasErrors bean="${params.commissionErrors}">
             <ul class="errors" role="alert">
-                <g:eachError bean="${this.commission}" var="error">
+                <g:eachError bean="${params.commissionErrors}" var="error">
                 <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
                 </g:eachError>
             </ul>
@@ -83,9 +83,9 @@
 
         <div id="create-operational-expense" class="content scaffold-create" role="main">
                     <h2>Add Operational Expense</h2>
-                    <g:hasErrors bean="${this.operationalExpense}">
+                    <g:hasErrors bean="${params.operationalExpenseErrors}">
                                 <ul class="errors" role="alert">
-                                    <g:eachError bean="${this.operationalExpense}" var="error">
+                                    <g:eachError bean="${params.operationalExpenseErrors}" var="error">
                                     <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
                                     </g:eachError>
                                 </ul>

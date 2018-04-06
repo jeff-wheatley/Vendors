@@ -9,20 +9,38 @@ conversionRule 'clr', ColorConverter
 conversionRule 'wex', WhitespaceThrowableProxyConverter
 
 // See http://logback.qos.ch/manual/groovy.html for details on configuration
+def basicPattern = "%level %logger - %msg%n "
+def defaultPattern = " %date %level %logger - %msg%n"
+def targetDir = BuildSettings.TARGET_DIR
+
+println("creating stdout appender")
 appender('STDOUT', ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         charset = Charset.forName('UTF-8')
-
-        pattern =
-                '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} ' + // Date
-                        '%clr(%5p) ' + // Log level
-                        '%clr(---){faint} %clr([%15.15t]){faint} ' + // Thread
-                        '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
-                        '%m%n%wex' // Message
+        pattern = basicPattern
     }
 }
 
-def targetDir = BuildSettings.TARGET_DIR
+println("creating error file appender")
+appender('ERRORFILE', FileAppender) {
+    file = "${targetDir}/error.log"
+    append = true
+    encoder(PatternLayoutEncoder) {
+        pattern = defaultPattern
+    }
+}
+
+println("creating info file appender")
+appender('INFOFILE', FileAppender) {
+    file = "${targetDir}/info.log"
+    append = true
+    encoder(PatternLayoutEncoder) {
+        pattern = defaultPattern
+    }
+}
+
+
+println("creating stacktrace appender")
 if (Environment.isDevelopmentMode() && targetDir != null) {
     appender("FULL_STACKTRACE", FileAppender) {
         file = "${targetDir}/stacktrace.log"
@@ -31,6 +49,11 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
             pattern = "%level %logger - %msg%n"
         }
     }
+    println("creating logger")
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
 }
-root(ERROR, ['STDOUT'])
+println("creating root.error")
+root(ERROR, ['STDOUT', 'ERRORFILE'])
+println("creating root.info")
+root(INFO, ['INFOFILE'])
+println("All done.")

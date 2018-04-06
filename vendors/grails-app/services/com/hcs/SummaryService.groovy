@@ -1,18 +1,22 @@
 package com.hcs
 
 
+import grails.core.*
 import grails.gorm.services.Service
 import java.time.temporal.TemporalAdjusters
 import org.joda.time.LocalDate
-
+import org.springframework.beans.factory.annotation.*
 
 class SummaryService {
+
+    GrailsApplication grailsApplication
 
     // Set default period to the first / last day of the current month
     Map getDefaultPeriod() {
         LocalDate today = LocalDate.now()
         // with(TemporalAdjusters.lastDayOfMonth())
-        [startDate: today.withDayOfMonth(1), endDate: today.withDayOfMonth(30)] // FIXME
+
+        [startDate: today.withDayOfMonth(1), endDate: today.dayOfMonth().withMaximumValue()]
     }
 
     List salesByPeriod( LocalDate startDate, LocalDate endDate ) {
@@ -65,7 +69,9 @@ class SummaryService {
         BigDecimal grossProfit = grossSales - costOfSales
         BigDecimal adjustedGrossProfit = grossProfit + commissions // + Direct Competition Income if we collected that...
         BigDecimal netProceeds = adjustedGrossProfit - operatingExpenses
-        BigDecimal setAside =netProceeds * 0.07
+        BigDecimal setasidePercent = grailsApplication.config.getProperty('vendors.setaside.percent', BigDecimal)
+        BigDecimal setAside = netProceeds * (setasidePercent ?: 0.07)
+        setAside = setAside.setScale(2, BigDecimal.ROUND_HALF_EVEN)
         BigDecimal netIncome = netProceeds - setAside
 
         // return the resultsin an ordered map

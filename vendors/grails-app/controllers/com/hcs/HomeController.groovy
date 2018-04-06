@@ -38,9 +38,13 @@ CostOfSaleService costOfSaleService
         }
 
         try {
+            sale.dayOfSale = LocalDate.parse(params.dayOfSale)
+            sale.errors = null
             saleService.save(sale)
         } catch (ValidationException e) {
-            respond sale.errors, view:'index'
+            flash.message ="${e.message}"
+            params.saleErrors = sale.errors
+            redirect( action:'index' )
             return
         }
 
@@ -60,9 +64,13 @@ CostOfSaleService costOfSaleService
         }
 
         try {
+            commission.dayOfCommission = LocalDate.parse(params.dayOfCommission)
+            commission.errors = null
             commissionService.save(commission)
         } catch (ValidationException e) {
-            respond commission.errors, view:'index'
+            flash.message ="${e.message}"
+            params.commissionErrors = commission.errors
+            redirect( action:'index' )
             return
         }
 
@@ -83,10 +91,13 @@ CostOfSaleService costOfSaleService
         }
 
         try {
+            costOfSale.dayOfCost = LocalDate.parse(params.dayOfCost)
+            costOfSale.errors = null
             costOfSaleService.save(costOfSale)
         } catch (ValidationException e) {
-            log.error("Caught validation error saving costOfSale! ${e.message}")
-            respond costOfSale.errors, view:'index'
+            flash.message ="${e.message}"
+            params.costOfSaleErrors = costOfSale.errors
+            redirect( action:'index' )
             return
         }
 
@@ -107,9 +118,13 @@ CostOfSaleService costOfSaleService
         }
 
         try {
+            operationalExpense.dayOfExpense = LocalDate.parse(params.dayOfExpense)
+            operationalExpense.errors = null
             operationalExpenseService.save(operationalExpense)
         } catch (ValidationException e) {
-            respond operationalExpense.errors, view:'index'
+            flash.message ="${e.message}"
+            params.operationalExpenseErrors = operationalExpense.errors
+            redirect( action:'index' )
             return
         }
 
