@@ -10,7 +10,7 @@ conversionRule 'wex', WhitespaceThrowableProxyConverter
 
 // See http://logback.qos.ch/manual/groovy.html for details on configuration
 def basicPattern = "%level %logger - %msg%n "
-def defaultPattern = " %date %level %logger - %msg%n"
+def defaultPattern = " %level %logger - %msg%n"
 def targetDir = BuildSettings.TARGET_DIR
 
 println("creating stdout appender")
