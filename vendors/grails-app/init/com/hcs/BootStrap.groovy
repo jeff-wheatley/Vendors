@@ -18,8 +18,8 @@ class BootStrap {
             // create some expenses and operationalExpenses
             new CostOfSale(dateOfCosts: date, amount: 123.45, vendor: sams).save(flush: true)
             new CostOfSale(dateOfCost: date, amount: 242.88, vendor: cosco).save(flush: true)
-            new OperationalExpense(dateOfExpense: date, amount: 123.45, type: OperationalExpenseType.JANITORIAL).save(flush: true)
-            new OperationalExpense(dateOfExpense: date, amount: 223.99, type: OperationalExpenseType.OFFICE).save(flush: true)
+            new OperationalExpense(dateOfExpense: date, amount: 123.45, type: OperationalExpenseType.JANITOR).save(flush: true)
+            new OperationalExpense(dateOfExpense: date, amount: 223.99, type: OperationalExpenseType.UTILITIES).save(flush: true)
 
             // Create some sales and Commissions
             new Sale(dateOfSale: date, amount: 123.45).save(flush: true)

@@ -11,7 +11,16 @@ conversionRule 'wex', WhitespaceThrowableProxyConverter
 // See http://logback.qos.ch/manual/groovy.html for details on configuration
 def basicPattern = "%level %logger - %msg%n "
 def defaultPattern = " %level %logger - %msg%n"
+
+// For production, set the log directory in ~home/kbe/log, otherwise, use the setting from BuildSettings
 def targetDir = BuildSettings.TARGET_DIR
+def grails_env = System.getProperty("grails.env")
+println("Configuring logging for $grails_env environment")
+if(grails_env == "prod") {
+    def userHome = System.getProperty("user.home")
+    targetDir = "$userHome/kbe/logs"
+}
+println("Setting log directory to $targetDir")
 
 println("creating stdout appender")
 appender('STDOUT', ConsoleAppender) {
@@ -53,7 +62,7 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
 }
 println("creating root.error")
-root(ERROR, ['STDOUT', 'ERRORFILE'])
+root(ERROR, ['ERRORFILE'])
 println("creating root.info")
 root(INFO, ['INFOFILE'])
 println("All done.")
