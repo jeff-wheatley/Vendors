@@ -19,13 +19,13 @@
         </div>
 
         <div id="update-sale-costs" class="content scaffold-create" role="main">
-        <h1>Update Sales and Costs</h1>
+        <h1><g:message code="vendors.update.expense.sales.header" /></h1>
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
 
         <div id="create-cost" class="content scaffold-create" role="main">
-                    <h2>Add Cost of Sale</h2>
+                    <h2><g:message code="vendors.add.cost.of.sale.header" /></h2>
                     <g:hasErrors bean="${params.costOfSaleErrors}">
                                 <ul class="errors" role="alert">
                                     <g:eachError bean="${params.costOfSaleErrors}" var="error">
@@ -44,7 +44,7 @@
                 </div>
 
             <div id="create-sale" class="content scaffold-create" role="main">
-            <h2>Add Sale</h2>
+            <h2><g:message code="vendors.add.sale.header" /></h2>
             <g:hasErrors bean="${params.saleErrors}">
             <ul class="errors" role="alert">
                 <g:eachError bean="${params.saleError}" var="error">
@@ -63,7 +63,7 @@
         </div>
 
 <div id="create-commission" class="content scaffold-create" role="main">
-            <h2>Add Commission</h2>
+            <h2><g:message code="vendors.add.commission.header" /></h2>
             <g:hasErrors bean="${params.commissionErrors}">
             <ul class="errors" role="alert">
                 <g:eachError bean="${params.commissionErrors}" var="error">
@@ -105,12 +105,12 @@
                 </div>
 
 <div id="view-summary" class="content scaffold-create" role="main">
-        <h1>Financial Summary</h1>
+        <h1><g:message code="vendors.financial.summary.header" /></h1>
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
             <div id="summary-period" class="content scaffold-create" role="main">
-            <h2>Confirm Dates of Summary</h2>
+            <h2><g:message code="vendors.confirm.dates.summary.header" /></h2>
             <g:hasErrors bean="${this.command}">
             <ul class="errors" role="alert">
                 <g:eachError bean="${this.command}" var="error">
@@ -130,7 +130,7 @@
         </div>
 
             <div id="summary-totals" class="content scaffold-create" role="main">
-                        <h2>Period Summary</h2>
+                        <h2><g:message code="vendors.totals.summary.header" /></h2>
                         <ul class="main" role="main">
                             <g:each in="${this.command.revenueExpenseSummary}" var="item">
                             <li>${item.key} = ${item.value}</li>
@@ -139,7 +139,7 @@
                         </div>
 
             <div id="summary-commissions" class="content scaffold-create" role="main">
-                        <h2>Commissions by Vendor</h2>
+                        <h2><g:message code="vendors.commissions.summary.header" /></h2>
                         <ul class="main" role="main">
                             <g:each in="${this.command.commissionVendorSummary}" var="item">
                             <li>${item.key} = ${item.value}</li>
@@ -148,7 +148,7 @@
                         </div>
 
             <div id="summary-vendors" class="content scaffold-create" role="main">
-                        <h2>Vendor Totals for Period</h2>
+                        <h2><g:message code="vendors.costs.summary.header" /></h2>
                         <ul class="main" role="main">
                             <g:each in="${this.command.vendorSummary}" var="item">
                             <li>${item.key} = ${item.value}</li>
@@ -157,7 +157,7 @@
                         </div>
 
             <div id="summary-operational-types" class="content scaffold-create" role="main">
-                        <h2>Operational Totals by Type</h2>
+                        <h2><g:message code="vendors.operational.expense.summary.header" /></h2>
                         <ul class="main" role="main">
                             <g:each in="${this.command.operationalExpenseSummary}" var="item">
                             <li>${item.key} = ${item.value}</li>
