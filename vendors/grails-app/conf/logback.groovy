@@ -22,7 +22,6 @@ if(grails_env == "prod") {
 }
 println("Setting log directory to $targetDir")
 
-println("creating stdout appender")
 appender('STDOUT', ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         charset = Charset.forName('UTF-8')
@@ -30,7 +29,6 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
-println("creating error file appender")
 appender('ERRORFILE', FileAppender) {
     file = "${targetDir}/error.log"
     append = true
@@ -39,7 +37,6 @@ appender('ERRORFILE', FileAppender) {
     }
 }
 
-println("creating info file appender")
 appender('INFOFILE', FileAppender) {
     file = "${targetDir}/info.log"
     append = true
@@ -48,8 +45,6 @@ appender('INFOFILE', FileAppender) {
     }
 }
 
-
-println("creating stacktrace appender")
 if (Environment.isDevelopmentMode() && targetDir != null) {
     appender("FULL_STACKTRACE", FileAppender) {
         file = "${targetDir}/stacktrace.log"
@@ -58,11 +53,8 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
             pattern = "%level %logger - %msg%n"
         }
     }
-    println("creating logger")
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
 }
-println("creating root.error")
 root(ERROR, ['ERRORFILE'])
-println("creating root.info")
+
 root(INFO, ['INFOFILE'])
-println("All done.")
