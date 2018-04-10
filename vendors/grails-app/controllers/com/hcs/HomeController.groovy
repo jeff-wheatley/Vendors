@@ -2,6 +2,7 @@ package com.hcs
 
 import grails.validation.Validateable
 import grails.validation.ValidationException
+import java.time.format.DateTimeParseException
 import org.joda.time.LocalDate
 import static org.springframework.http.HttpStatus.*
 
@@ -41,7 +42,7 @@ CostOfSaleService costOfSaleService
             sale.dayOfSale = LocalDate.parse(params.dayOfSale)
             sale.errors = null
             saleService.save(sale)
-        } catch (ValidationException e) {
+        } catch (ValidationException | IllegalArgumentException e) {
             flash.message ="${e.message}"
             params.saleErrors = sale.errors
             redirect( action:'index' )
@@ -67,7 +68,7 @@ CostOfSaleService costOfSaleService
             commission.dayOfCommission = LocalDate.parse(params.dayOfCommission)
             commission.errors = null
             commissionService.save(commission)
-        } catch (ValidationException e) {
+        } catch (ValidationException | IllegalArgumentException e) {
             flash.message ="${e.message}"
             params.commissionErrors = commission.errors
             redirect( action:'index' )
@@ -94,7 +95,7 @@ CostOfSaleService costOfSaleService
             costOfSale.dayOfCost = LocalDate.parse(params.dayOfCost)
             costOfSale.errors = null
             costOfSaleService.save(costOfSale)
-        } catch (ValidationException e) {
+        } catch (ValidationException | IllegalArgumentException e) {
             flash.message ="${e.message}"
             params.costOfSaleErrors = costOfSale.errors
             redirect( action:'index' )
@@ -121,7 +122,7 @@ CostOfSaleService costOfSaleService
             operationalExpense.dayOfExpense = LocalDate.parse(params.dayOfExpense)
             operationalExpense.errors = null
             operationalExpenseService.save(operationalExpense)
-        } catch (ValidationException e) {
+        } catch (ValidationException | IllegalArgumentException e) {
             flash.message ="${e.message}"
             params.operationalExpenseErrors = operationalExpense.errors
             redirect( action:'index' )
