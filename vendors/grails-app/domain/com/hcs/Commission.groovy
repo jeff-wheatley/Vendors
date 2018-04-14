@@ -16,4 +16,6 @@ class Commission {
         dayOfCommission(nullable: false)
         amount(nullable: false)
     }
+
+    String toString() { "Commission \$$amount for $commissionVendor on $dayOfCommission"}
 }

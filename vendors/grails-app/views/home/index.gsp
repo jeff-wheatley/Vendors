@@ -8,13 +8,12 @@
         <a href="#update-sale-expense" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div class="nav" role="navigation">
             <ul>
-                <li><a class="home" href="${createLink(uri: '/home')}"><g:message code="default.home.label"/></a></li>
+                            <li><a href="${createLink(uri: '/vendor')}"><g:message code="vendors.vendor.management"/></a></li>
+            <li><a href="${createLink(uri: '/CommissionVendor')}"><g:message code="vendors.commission.vendor.management"/></a></li>
                 <li><a href="${createLink(uri: '/Commission')}"><g:message code="vendors.commission.management"/></a></li>
-                <li><a href="${createLink(uri: '/CommissionVendor')}"><g:message code="vendors.commission.vendor.management"/></a></li>
                 <li><a href="${createLink(uri: '/costOfSale')}"><g:message code="vendors.cost.of.sales.management"/></a></li>
                 <li><a href="${createLink(uri: '/operationalExpense')}"><g:message code="vendors.operational.expense.management"/></a></li>
                 <li><a href="${createLink(uri: '/sale')}"><g:message code="vendors.sale.management"/></a></li>
-                <li><a href="${createLink(uri: '/vendor')}"><g:message code="vendors.vendor.management"/></a></li>
             </ul>
         </div>
 
@@ -35,10 +34,12 @@
                                 </g:hasErrors>
                     <g:form url="[controller:'home', action:'saveCostOfSale']" method="POST">
                         <fieldset class="form">
-                        <f:all bean="costOfSale"/>
+                        <f:field bean="costOfSale" property="dayOfCost"/>
+                        <f:field bean="costOfSale" property="vendor"/>
+                        <f:field bean="costOfSale" property="amount"/>
                                                     </fieldset>
                         <fieldset class="buttons">
-                            <g:submitButton name="create" class="save" action="saveCostOfSale" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                            <g:submitButton name="create" class="save" action="saveCostOfSale" value="${message(code: 'vendors.add.cost.of.sale.save')}" />
                         </fieldset>
                     </g:form>
                 </div>
@@ -57,7 +58,7 @@
                     <f:all bean="sale"/>
                 </fieldset>
                 <fieldset class="buttons">
-                    <g:submitButton name="create" class="save" action="saveSale" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                    <g:submitButton name="create" class="save" action="saveSale" value="${message(code: 'vendors.add.sale.save')}" />
                 </fieldset>
             </g:form>
         </div>
@@ -73,16 +74,18 @@
             </g:hasErrors>
             <g:form url="[controller:'home', action:'saveCommission']" method="POST">
                 <fieldset class="form">
-                    <f:all bean="commission"/>
+                    <f:field bean="commission" property="dayOfCommission"/>
+                    <f:field bean="commission" property="commissionVendor"/>
+                    <f:field bean="commission" property="amount"/>
                 </fieldset>
                 <fieldset class="buttons">
-                    <g:submitButton name="create" class="save" action="saveCommission" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                    <g:submitButton name="create" class="save" action="saveCommission" value="${message(code: 'vendors.add.commission.save')}" />
                 </fieldset>
             </g:form>
         </div>
 
         <div id="create-operational-expense" class="content scaffold-create" role="main">
-                    <h2>Add Operational Expense</h2>
+                    <h2><g:message code="vendors.add.operational.expense.header" /></h2>
                     <g:hasErrors bean="${params.operationalExpenseErrors}">
                                 <ul class="errors" role="alert">
                                     <g:eachError bean="${params.operationalExpenseErrors}" var="error">
@@ -92,17 +95,19 @@
                                 </g:hasErrors>
                     <g:form url="[controller:'home', action:'saveOperationalExpense']" method="POST">
                         <fieldset class="form">
-                            <f:all bean="operationalExpense"/>
+                            <f:field bean="operationalExpense" property="dayOfExpense"/>
+                            <f:field bean="operationalExpense" property="operationalExpenseType"/>
+                            <f:field bean="operationalExpense" property="amount"/>
                         </fieldset>
                         <fieldset class="buttons">
-                            <g:submitButton name="create" class="save" action="saveOperationalExpense" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                            <g:submitButton name="create" class="save" action="saveOperationalExpense" value="${message(code: 'vendors.add.operational.expense.save')}" />
                         </fieldset>
                     </g:form>
                 </div>
 
         </div>
 
-                </div>
+                </div>                                                         ƒ
 
 <div id="view-summary" class="content scaffold-create" role="main">
         <h1><g:message code="vendors.financial.summary.header" /></h1>
@@ -118,13 +123,14 @@
                 </g:eachError>
             </ul>
             </g:hasErrors>
-            <g:form url="[controller:'home', action:'index']" method="POST">
+            <g:form url="[controller:'home']" method="POST">
                 <fieldset class="form">
                     <f:field bean="command" property="startDate"/>
                     <f:field bean="command" property="endDate"/>
                 </fieldset>
                 <fieldset class="buttons">
-                    <g:submitButton name="search" class="search" action="index" value="${message(code: 'default.button.search.label', default: 'Search')}" />
+                    <g:actionSubmit value="${message(code: 'vendors.update.summary.period')}" action="index" />
+                    <g:actionSubmit value="${message(code: 'vendors.view.kbe.report')}" action="kbeReport" />
                 </fieldset>
             </g:form>
         </div>

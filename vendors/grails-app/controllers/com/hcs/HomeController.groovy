@@ -51,7 +51,7 @@ CostOfSaleService costOfSaleService
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'sale.label', default: 'Sale'), sale.id])
+                flash.message = message(code: 'default.created.message', args: ["$sale"])
                 redirect( action:'index' )
             }
             '*' { respond sale, [status: CREATED] }
@@ -77,7 +77,7 @@ CostOfSaleService costOfSaleService
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'commission.label', default: 'Commission'), commission.id])
+                flash.message = message(code: 'default.created.message', args: ["$commission"])
                 redirect( action:'index' )
             }
             '*' { respond commission, [status: CREATED] }
@@ -104,7 +104,7 @@ CostOfSaleService costOfSaleService
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'costOfSale.label', default: 'CostOfSale'), costOfSale.id])
+                flash.message = message(code: 'default.created.message', args: ["$costOfSale"])
                 redirect( action:'index' )
             }
             '*' { respond costOfSale, [status: CREATED] }
@@ -123,20 +123,36 @@ CostOfSaleService costOfSaleService
             operationalExpense.errors = null
             operationalExpenseService.save(operationalExpense)
         } catch (ValidationException | IllegalArgumentException e) {
-            flash.message ="${e.message}"
+            flash.message = "${e.message}"
             params.operationalExpenseErrors = operationalExpense.errors
-            redirect( action:'index' )
+            redirect(action: 'index')
             return
         }
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'operationalExpense.label', default: 'OperationalExpense'), operationalExpense.id])
-                redirect( action:'index' )
+                flash.message = message(code: 'default.created.message', args: ["$operationalExpense"])
+                redirect(action: 'index')
             }
             '*' { respond operationalExpense, [status: CREATED] }
         }
     }
+
+        def kbeReport(Integer max) {
+            // convert params property values of start and end dates from String to LocalDate
+            try {
+                params.startDate = LocalDate.parse(params.startDate)
+                params.endDate = LocalDate.parse(params.endDate)
+                log.error("JKW startDate = ${params.startDate.class.name}")
+            } catch( Exception e ) {
+                flash.message = "${e.message}"
+                redirect(action: 'index')
+                return
+            }
+
+            render( view: "_kbeReport", model: summaryService.kbeReport(params))
+        }
+
 
     protected void notFound() {
         request.withFormat {

@@ -16,4 +16,6 @@ class CostOfSale {
         dayOfCost(nullable: false)
         amount(nullable: false)
     }
+
+    String toString() { "CostOfSale \$$amount for $vendor on $dayOfCost"}
 }

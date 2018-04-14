@@ -17,4 +17,6 @@ OperationalExpenseType operationalExpenseType
 operationalExpenseType( nullable: false )
         description( nullable: true, maxSize: 60 )
     }
+
+    String toString() { "OperationalExpense \$$amount for $operationalExpenseType on $dayOfExpense"}
 }

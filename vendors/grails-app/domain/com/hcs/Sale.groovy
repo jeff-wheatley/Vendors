@@ -13,4 +13,6 @@ class Sale {
         dayOfSale(nullable: false)
         amount(nullable: false)
     }
+
+    String toString() { "Sale \$$amount on $dayOfSale"}
 }

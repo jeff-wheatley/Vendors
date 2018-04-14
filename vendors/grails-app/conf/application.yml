@@ -134,4 +134,7 @@ grails.plugin.databasemigration:
 
 
 ---
-vendors.setaside.percent: 0.07
+vendors:
+    setaside.percent: 0.07
+    manager: Ronny Wheatley
+    vending.facility: Transportation 120010
