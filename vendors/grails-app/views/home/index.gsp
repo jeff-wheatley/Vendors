@@ -3,6 +3,8 @@
     <head>
         <meta name="layout" content="main" />
         <title><g:message code="vendors.title" /></title>
+            <asset:javascript src="application"/>
+            <asset:stylesheet src="application"/>
     </head>
     <body>
         <a href="#update-sale-expense" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
@@ -34,7 +36,7 @@
                                 </g:hasErrors>
                     <g:form url="[controller:'home', action:'saveCostOfSale']" method="POST">
                         <fieldset class="form">
-                        <f:field bean="costOfSale" property="dayOfCost"/>
+                        <g:field name="dayOfCost" type="date" value="${costOfSale.dayOfCost}" />
                         <f:field bean="costOfSale" property="vendor"/>
                         <f:field bean="costOfSale" property="amount"/>
                                                     </fieldset>
@@ -55,7 +57,8 @@
             </g:hasErrors>
             <g:form url="[controller:'home', action:'saveSale']" method="POST">
                 <fieldset class="form">
-                    <f:all bean="sale"/>
+                    <g:field name="dayOfSale" type="date" value="${sale.dayOfSale}" />
+                                            <f:field bean="sale" property="amount"/>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" action="saveSale" value="${message(code: 'vendors.add.sale.save')}" />
@@ -74,7 +77,7 @@
             </g:hasErrors>
             <g:form url="[controller:'home', action:'saveCommission']" method="POST">
                 <fieldset class="form">
-                    <f:field bean="commission" property="dayOfCommission"/>
+                    <g:field name="dayOfCommission" type="date" value="${commission.dayOfCommission}" />
                     <f:field bean="commission" property="commissionVendor"/>
                     <f:field bean="commission" property="amount"/>
                 </fieldset>
@@ -95,7 +98,7 @@
                                 </g:hasErrors>
                     <g:form url="[controller:'home', action:'saveOperationalExpense']" method="POST">
                         <fieldset class="form">
-                            <f:field bean="operationalExpense" property="dayOfExpense"/>
+                            <g:field name="dayOfExpense" type="date" value="${operationalExpense.dayOfExpense}" />
                             <f:field bean="operationalExpense" property="operationalExpenseType"/>
                             <f:field bean="operationalExpense" property="amount"/>
                         </fieldset>
@@ -107,7 +110,7 @@
 
         </div>
 
-                </div>                                                         ƒ
+                </div>
 
 <div id="view-summary" class="content scaffold-create" role="main">
         <h1><g:message code="vendors.financial.summary.header" /></h1>
@@ -125,12 +128,16 @@
             </g:hasErrors>
             <g:form url="[controller:'home']" method="POST">
                 <fieldset class="form">
-                    <f:field bean="command" property="startDate"/>
-                    <f:field bean="command" property="endDate"/>
-                </fieldset>
+                <g:select name="selectedCycle" from="${command.recentCycles}" value="${command.recentCycles[0]}" onchange="cycleChanged(this.value);"/>
+<span id="subContainer">
+                    <g:field name="startDate" type="date" value="${command.startDate}" />
+                    <g:field name="endDate" type="date" value="${command.endDate}" />
+                    </span>
+             </fieldset>
                 <fieldset class="buttons">
                     <g:actionSubmit value="${message(code: 'vendors.update.summary.period')}" action="index" />
                     <g:actionSubmit value="${message(code: 'vendors.view.kbe.report')}" action="kbeReport" />
+                    <g:actionSubmit value="${message(code: 'vendors.pdf.kbe.report')}" action="kbeReportPDF" />
                 </fieldset>
             </g:form>
         </div>
@@ -174,6 +181,12 @@
                         </div>
 
         </div>
+
+        <script>
+            function cycleChanged(cycle) {
+                jQuery.ajax({type:'POST',data:'cycle='+cycle, url:'home/cycleChanged',success:function(data,textStatus){jQuery('#subContainer').html(data);},error:function(XMLHttpRequest,textStatus,errorThrown){}});
+            }
+        </script>
 
     </body>
 </html>

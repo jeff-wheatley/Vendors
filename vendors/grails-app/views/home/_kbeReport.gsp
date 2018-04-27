@@ -9,6 +9,7 @@
 <div id="summary-period" class="content scaffold-create" role="main">
 <h1>Financial Report</h1>
 <h1>Kentucky Business Enterprises Program</h1>
+
 <p>Vending Facility: "${vendingFacility}"</p>
 <p>Manager: "${manager}"</p>
 
@@ -16,6 +17,7 @@
 
 <table>
 <g:each in="${rows}" var="row">
+<tr>
     <td>${row.label}</td>
     <td>${row.subValue1}</td>
     <td>${row.subLabel2}</td>

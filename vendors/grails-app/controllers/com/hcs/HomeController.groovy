@@ -2,8 +2,10 @@ package com.hcs
 
 import grails.validation.Validateable
 import grails.validation.ValidationException
+
+import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import static org.springframework.http.HttpStatus.*
 
 class HomeController {
@@ -13,8 +15,10 @@ class HomeController {
 CostOfSaleService costOfSaleService
     OperationalExpenseService operationalExpenseService
     SummaryService summaryService
+    ReportService reportService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static DateTimeFormatter defaultLocalDateFormat = DateTimeFormatter.ofPattern("yyyy-mm-yyyy")
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -24,12 +28,18 @@ CostOfSaleService costOfSaleService
             command.startDate = period.startDate
             command.endDate = period.endDate
         }
+        command.recentCycles = reportService.recentCycles
         command.revenueExpenseSummary = summaryService.revenueExpenseSummary(command.startDate, command.endDate)
         command.vendorSummary = summaryService.vendorSummary(command.startDate, command.endDate)
         command.commissionVendorSummary = summaryService.commissionVendorSummary(command.startDate, command.endDate)
         command.operationalExpenseSummary = summaryService.operationalExpenseSummary(command.startDate, command.endDate)
         LocalDate today = LocalDate.now()
         respond command: command, sale:new Sale(dayOfSale:today), commission: new Commission(dayOfCommission:today), costOfSale: new CostOfSale(dayOfCost:today), operationalExpense: new OperationalExpense(dayOfExpense:today)
+    }
+
+    def cycleChanged( String cycleName) {
+        ReportCycle cycle = ReportCycle.fromName( params.cycle )
+        render g.field( name:'startDate', type:'date', value:cycle.startDate) + g.field( name:'endDate', type:'date', value:cycle.endDate)
     }
 
     def saveSale(Sale sale) {
@@ -143,16 +153,29 @@ CostOfSaleService costOfSaleService
             try {
                 params.startDate = LocalDate.parse(params.startDate)
                 params.endDate = LocalDate.parse(params.endDate)
-                log.error("JKW startDate = ${params.startDate.class.name}")
             } catch( Exception e ) {
                 flash.message = "${e.message}"
                 redirect(action: 'index')
                 return
             }
 
-            render( view: "_kbeReport", model: summaryService.kbeReport(params))
+            render( view: "_kbeReport", model: reportService.kbeReport(params))
         }
 
+
+    def kbeReportPDF(Integer max) {
+        // convert params property values of start and end dates from String to LocalDate
+        try {
+            params.startDate = LocalDate.parse(params.startDate)
+            params.endDate = LocalDate.parse(params.endDate)
+        } catch( Exception e ) {
+            flash.message = "${e.message}"
+            redirect(action: 'index')
+            return
+        }
+
+        renderPdf(filename: 'kbeReport.pdf', template:"kbeReport", model:reportService.kbeReport(params))
+        }
 
     protected void notFound() {
         request.withFormat {
@@ -168,6 +191,7 @@ CostOfSaleService costOfSaleService
 class HomeCommand {
       LocalDate startDate
     LocalDate endDate
+    List recentCycles
     Map revenueExpenseSummary
     Map commissionVendorSummary
     Map vendorSummary

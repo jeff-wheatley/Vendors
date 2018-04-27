@@ -1,13 +1,21 @@
 package com.hcs
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import grails.util.Environment
 
 class BootStrap {
 
     def init = { servletContext ->
+        LocalDate date = LocalDate.now()
+
+        // insure we have a current ReportCycle singleton
+        ReportCycle currentCycle = ReportCycle.get(1)
+        if( !currentCycle ) {
+            new ReportCycle( cycle: date).save(flush: true)
+        }
+
         if(Environment.current == Environment.DEVELOPMENT) {
-            LocalDate date = LocalDate.parse("2018-03-25")
+
 
             // Create some reference vendors and commissionVendors
             def sams = new Vendor(name: 'Sams').save(flush: true)
