@@ -45,5 +45,7 @@ class ReportCycle {
         Integer year = cycleName.substring(3).toInteger()
         new ReportCycle (cycle: new LocalDate(year, month, 1 ))
     }
+
+    static ReportCycle getCurrentCycle() { get( 1 ) }
 }
 

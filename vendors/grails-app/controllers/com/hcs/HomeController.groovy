@@ -18,23 +18,32 @@ CostOfSaleService costOfSaleService
     ReportService reportService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
-    static DateTimeFormatter defaultLocalDateFormat = DateTimeFormatter.ofPattern("yyyy-mm-yyyy")
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MMM-dd")
 
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        HomeCommand command = new HomeCommand(params)
-        if(!command.startDate) {
-            Map period = summaryService.defaultPeriod
-            command.startDate = period.startDate
-            command.endDate = period.endDate
+    LocalDate parseDate( String date ) {
+        LocalDate.parse( date, dateFormat)
+    }
+
+    def index(HomeCommand command) {
+        command.clearErrors()
+        params.max = 20
+        if(params.startDate == null) {
+            ReportCycle cycle = ReportCycle.currentCycle
+            command.startDate = cycle.startDate
+            command.endDate = cycle.endDate
+            command.cycle = cycle.toString()
+        }
+        else {
+            command.startDate = new LocalDate( params.startDate_year.toInteger(), params.startDate_month.toInteger(), params.startDate_day.toInteger() )
+            command.endDate = new LocalDate( params.endDate_year.toInteger(), params.endDate_month.toInteger(), params.endDate_day.toInteger() )
         }
         command.recentCycles = reportService.recentCycles
-        command.revenueExpenseSummary = summaryService.revenueExpenseSummary(command.startDate, command.endDate)
-        command.vendorSummary = summaryService.vendorSummary(command.startDate, command.endDate)
-        command.commissionVendorSummary = summaryService.commissionVendorSummary(command.startDate, command.endDate)
-        command.operationalExpenseSummary = summaryService.operationalExpenseSummary(command.startDate, command.endDate)
-        LocalDate today = LocalDate.now()
-        respond command: command, sale:new Sale(dayOfSale:today), commission: new Commission(dayOfCommission:today), costOfSale: new CostOfSale(dayOfCost:today), operationalExpense: new OperationalExpense(dayOfExpense:today)
+        command.revenueExpenseSummary = summaryService.revenueExpenseSummary(command.startDate, command.endDate, command.reportByType, command.showStartAndEndDatesOnly)
+        command.vendorSummary = summaryService.vendorSummary(command.startDate, command.endDate, command.reportByType, command.showStartAndEndDatesOnly)
+        command.commissionVendorSummary = summaryService.commissionVendorSummary(command.startDate, command.endDate, command.reportByType, command.showStartAndEndDatesOnly)
+        command.operationalExpenseSummary = summaryService.operationalExpenseSummary(command.startDate, command.endDate, command.reportByType, command.showStartAndEndDatesOnly)
+        String today = LocalDate.now().format( dateFormat )
+        respond command: command, today: today, sale:new Sale(), commission: new Commission(), costOfSale: new CostOfSale(), operationalExpense: new OperationalExpense()
     }
 
     def cycleChanged( String cycleName) {
@@ -49,7 +58,7 @@ CostOfSaleService costOfSaleService
         }
 
         try {
-            sale.dayOfSale = LocalDate.parse(params.dayOfSale)
+            sale.dayOfSale = parseDate(params.dayOfSale)
             sale.errors = null
             saleService.save(sale)
         } catch (ValidationException | IllegalArgumentException e) {
@@ -75,7 +84,7 @@ CostOfSaleService costOfSaleService
         }
 
         try {
-            commission.dayOfCommission = LocalDate.parse(params.dayOfCommission)
+            commission.dayOfCommission = parseDate(params.dayOfCommission)
             commission.errors = null
             commissionService.save(commission)
         } catch (ValidationException | IllegalArgumentException e) {
@@ -102,7 +111,7 @@ CostOfSaleService costOfSaleService
         }
 
         try {
-            costOfSale.dayOfCost = LocalDate.parse(params.dayOfCost)
+            costOfSale.dayOfCost = parseDate(params.dayOfCost)
             costOfSale.errors = null
             costOfSaleService.save(costOfSale)
         } catch (ValidationException | IllegalArgumentException e) {
@@ -129,7 +138,7 @@ CostOfSaleService costOfSaleService
         }
 
         try {
-            operationalExpense.dayOfExpense = LocalDate.parse(params.dayOfExpense)
+            operationalExpense.dayOfExpense = parseDate(params.dayOfExpense)
             operationalExpense.errors = null
             operationalExpenseService.save(operationalExpense)
         } catch (ValidationException | IllegalArgumentException e) {
@@ -148,33 +157,13 @@ CostOfSaleService costOfSaleService
         }
     }
 
-        def kbeReport(Integer max) {
-            // convert params property values of start and end dates from String to LocalDate
-            try {
-                params.startDate = LocalDate.parse(params.startDate)
-                params.endDate = LocalDate.parse(params.endDate)
-            } catch( Exception e ) {
-                flash.message = "${e.message}"
-                redirect(action: 'index')
-                return
-            }
-
-            render( view: "_kbeReport", model: reportService.kbeReport(params))
+        def kbeReport(HomeCommand command) {
+            render( view: "_kbeReport", model: reportService.kbeReport(command.cycle))
         }
 
 
-    def kbeReportPDF(Integer max) {
-        // convert params property values of start and end dates from String to LocalDate
-        try {
-            params.startDate = LocalDate.parse(params.startDate)
-            params.endDate = LocalDate.parse(params.endDate)
-        } catch( Exception e ) {
-            flash.message = "${e.message}"
-            redirect(action: 'index')
-            return
-        }
-
-        renderPdf(filename: 'kbeReport.pdf', template:"kbeReport", model:reportService.kbeReport(params))
+    def kbeReportPDF(HomeCommand command) {
+        renderPdf(filename: 'kbeReport.pdf', template:"kbeReport", model:reportService.kbeReport(command.cycle))
         }
 
     protected void notFound() {
@@ -191,16 +180,13 @@ CostOfSaleService costOfSaleService
 class HomeCommand {
       LocalDate startDate
     LocalDate endDate
-    List recentCycles
+    ReportByType reportByType = ReportByType.MONTH
+    Boolean showStartAndEndDatesOnly = false
+    String cycle
+    List<ReportCycle> recentCycles
     Map revenueExpenseSummary
     Map commissionVendorSummary
     Map vendorSummary
                                Map operationalExpenseSummary
-    Map stockLossSummary
-
-    HomeCommand(Map args) {
-        startDate = args.startDate ? LocalDate.parse(args.startDate ) : null
-        endDate = args.endDate ? LocalDate.parse( args.endDate ) : null
-    }
     }
 

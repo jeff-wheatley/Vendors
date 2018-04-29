@@ -7,16 +7,15 @@ class ReportService {
     GrailsApplication grailsApplication
     SummaryService summaryService
 
-    ReportCycle getCurrentCycle() { ReportCycle.get( 1 ) }
 
     List<ReportCycle> getRecentCycles() {
-ReportCycle cycle = currentCycle
+ReportCycle cycle = ReportCycle.currentCycle
         assert cycle, 'A ReportCycle *must* be set as the *currentCycle* to get recentCycles from the ReportService.'
 
-        // create a list with the current and 5 previous cycles
+        // create a list with the current and several previous cycles
         List<ReportCycle> cycles = []
         cycles << cycle
-        5.times {
+        14.times {
             cycle = cycle.prevCycle
             cycles << cycle
         }
@@ -24,14 +23,16 @@ ReportCycle cycle = currentCycle
         cycles
     }
 
-    Map kbeReport( Map args ) {
-        assert args.startDate && args.endDate, "kbeReport does not support null start or end dates: start=${args.startDate}, end=${args.endDate}"
+    Map kbeReport( String cycleName) {
+        assert cycleName, "kbeReport requires a valid cycle"
+        ReportCycle cycle = ReportCycle.fromName( cycleName )
+        assert cycle, "kbeReport requires a valid cycle ($cycleName)"
         String manager = grailsApplication.config.getProperty('vendors.manager', String)
         String vendingFacility = grailsApplication.config.getProperty('vendors.vending.facility', String)
         assert manager && vendingFacility, "revenueExpenseSummary requires that both vendors.manager and vendors.vending.facility be defined in configuration."
 
         // Get calculated summary values
-        Map values = summaryService.revenueExpenseSummaryValues(args.startDate, args.endDate)
+        Map values = summaryService.revenueExpenseSummaryValues(cycle.startDate, cycle.endDate)
 
         // and build the table row beans in a list
         List rows = []
@@ -62,8 +63,7 @@ ReportCycle cycle = currentCycle
         rows << new ReportRow(label:'J. Net Income', operationLabel:'Total', value:values.netIncome)
         rows << new ReportRow(label:'K. Operator Salaries', operationLabel:'Total', value:values.operatorSalaries)
 
-        log.error("JKW reportService rendering KBE Report")
-        [ manager: manager, vendingFacility: vendingFacility, endDate: args.endDate, rows: rows]
+        [ manager: manager, vendingFacility: vendingFacility, endDate: cycle.endDate, rows: rows]
     }
 
 

@@ -26,4 +26,5 @@ enum OperationalExpenseType {
 		description
 	}
 
+	String getName() { name() }
 }
