@@ -1,6 +1,7 @@
 package com.hcs
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CostOfSale {
 
@@ -17,5 +18,5 @@ class CostOfSale {
         amount(nullable: false)
     }
 
-    String toString() { "CostOfSale \$$amount for $vendor on $dayOfCost"}
+    String toString() { "CostOfSale \$$amount for $vendor on ${dayOfCost.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}"}
 }

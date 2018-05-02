@@ -1,6 +1,7 @@
 package com.hcs
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class Sale {
 
@@ -14,5 +15,5 @@ class Sale {
         amount(nullable: false)
     }
 
-    String toString() { "Sale \$$amount on $dayOfSale"}
+    String toString() { "Sale \$$amount on ${dayOfSale.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}" }
 }

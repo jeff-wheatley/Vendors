@@ -10,10 +10,10 @@
 <h1>Financial Report</h1>
 <h1>Kentucky Business Enterprises Program</h1>
 
-<p>Vending Facility: "${vendingFacility}"</p>
-<p>Manager: "${manager}"</p>
+<p>Vending Facility: ${vendingFacility}</p>
+<p>Manager: ${manager}</p>
 
-<h1>Income Statement for Month Ending: "${endDate}"</h1>
+<h1>Income Statement for Month Ending: ${endDate}</h1>
 
 <table>
 <g:each in="${rows}" var="row">

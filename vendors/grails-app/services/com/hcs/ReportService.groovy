@@ -2,6 +2,7 @@ package com.hcs
 
 import grails.core.*
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ReportService {
     GrailsApplication grailsApplication
@@ -32,7 +33,9 @@ ReportCycle cycle = ReportCycle.currentCycle
         assert manager && vendingFacility, "revenueExpenseSummary requires that both vendors.manager and vendors.vending.facility be defined in configuration."
 
         // Get calculated summary values
-        Map values = summaryService.revenueExpenseSummaryValues(cycle.startDate, cycle.endDate)
+        Map results = summaryService.revenueExpenseSummaryValues(cycle.startDate, cycle.endDate, ReportByType.MONTH)
+        Map values = results.summary
+        Map operationalExpensesByType = results.operationalExpensesByType
 
         // and build the table row beans in a list
         List rows = []
@@ -45,25 +48,25 @@ ReportCycle cycle = ReportCycle.currentCycle
 
         // Handle operational expenses and it's breakdown
         rows << new ReportRow( label:'G. Operational Expenses (Itemized)', operationLabel:'Less', value:values.operationalExpenses)
-        rows << new ReportRow(label:OperationalExpenseType.BOOKKEEPING.description, subValue1: values.operationalExpensesByType[OperationalExpenseType.BOOKKEEPING.name()],
-                subLabel2: OperationalExpenseType.JANITOR.description, subValue2:values.operationalExpensesByType[OperationalExpenseType.JANITOR.name()] )
-        rows << new ReportRow(label:OperationalExpenseType.BUSINESSINC.description, subValue1: values.operationalExpensesByType[OperationalExpenseType.BUSINESSINC.name()],
-                subLabel2: OperationalExpenseType.RENT.description, subValue2:values.operationalExpensesByType[OperationalExpenseType.RENT.name()] )
-        rows << new ReportRow(label:OperationalExpenseType.COMMISSIONS.description, subValue1: values.operationalExpensesByType[OperationalExpenseType.COMMISSIONS.name()],
-                subLabel2: OperationalExpenseType.STOCKLOSS.description, subValue2:values.operationalExpensesByType[OperationalExpenseType.STOCKLOSS.name()] )
-        rows << new ReportRow(label:OperationalExpenseType.EMPLOYEEWAGES.description, subValue1: values.operationalExpensesByType[OperationalExpenseType.EMPLOYEEWAGES.name()],
-                subLabel2: OperationalExpenseType.SUPPLIES.description, subValue2:values.operationalExpensesByType[OperationalExpenseType.SUPPLIES.name()] )
-        rows << new ReportRow(label:OperationalExpenseType.EMPLOYEEFRINGES.description, subValue1: values.operationalExpensesByType[OperationalExpenseType.EMPLOYEEFRINGES.name()],
-                subLabel2: OperationalExpenseType.UTILITIES.description, subValue2:values.operationalExpensesByType[OperationalExpenseType.UTILITIES.name()] )
-        rows << new ReportRow(label:OperationalExpenseType.EQUIPMENT.description, subValue1: values.operationalExpensesByType[OperationalExpenseType.EQUIPMENT.name()],
-                subLabel2: OperationalExpenseType.OTHER.description, subValue2:values.operationalExpensesByType[OperationalExpenseType.OTHER.name()] )
+        rows << new ReportRow(label:OperationalExpenseType.BOOKKEEPING.description, subValue1: operationalExpensesByType[OperationalExpenseType.BOOKKEEPING.name],
+                subLabel2: OperationalExpenseType.JANITOR.description, subValue2:operationalExpensesByType[OperationalExpenseType.JANITOR.name] )
+        rows << new ReportRow(label:OperationalExpenseType.BUSINESSINC.description, subValue1: operationalExpensesByType[OperationalExpenseType.BUSINESSINC.name],
+                subLabel2: OperationalExpenseType.RENT.description, subValue2:operationalExpensesByType[OperationalExpenseType.RENT.name] )
+        rows << new ReportRow(label:OperationalExpenseType.COMMISSIONS.description, subValue1: operationalExpensesByType[OperationalExpenseType.COMMISSIONS.name],
+                subLabel2: OperationalExpenseType.STOCKLOSS.description, subValue2:operationalExpensesByType[OperationalExpenseType.STOCKLOSS.name] )
+        rows << new ReportRow(label:OperationalExpenseType.EMPLOYEEWAGES.description, subValue1: operationalExpensesByType[OperationalExpenseType.EMPLOYEEWAGES.name],
+                subLabel2: OperationalExpenseType.SUPPLIES.description, subValue2:operationalExpensesByType[OperationalExpenseType.SUPPLIES.name] )
+        rows << new ReportRow(label:OperationalExpenseType.EMPLOYEEFRINGES.description, subValue1: operationalExpensesByType[OperationalExpenseType.EMPLOYEEFRINGES.name],
+                subLabel2: OperationalExpenseType.UTILITIES.description, subValue2:operationalExpensesByType[OperationalExpenseType.UTILITIES.name] )
+        rows << new ReportRow(label:OperationalExpenseType.EQUIPMENT.description, subValue1: operationalExpensesByType[OperationalExpenseType.EQUIPMENT.name],
+                subLabel2: OperationalExpenseType.OTHER.description, subValue2:operationalExpensesByType[OperationalExpenseType.OTHER.name] )
 
         rows << new ReportRow( label:'H. Net Proceeds (F-G)', operationLabel:'Total', value: values.netProceeds)
         rows << new ReportRow(label:'I. Set-Aside (7%)', operationLabel:'Less', value:values.setAside)
         rows << new ReportRow(label:'J. Net Income', operationLabel:'Total', value:values.netIncome)
         rows << new ReportRow(label:'K. Operator Salaries', operationLabel:'Total', value:values.operatorSalaries)
 
-        [ manager: manager, vendingFacility: vendingFacility, endDate: cycle.endDate, rows: rows]
+        [ manager: manager, vendingFacility: vendingFacility, endDate: cycle.endDate.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd')), rows: rows]
     }
 
 

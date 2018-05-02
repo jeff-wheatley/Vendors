@@ -1,6 +1,7 @@
 package com.hcs
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class OperationalExpense {
 
@@ -18,5 +19,5 @@ operationalExpenseType( nullable: false )
         description( nullable: true, maxSize: 60 )
     }
 
-    String toString() { "OperationalExpense \$$amount for $operationalExpenseType on $dayOfExpense"}
+    String toString() { "OperationalExpense \$$amount for $operationalExpenseType on ${dayOfExpense.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}"}
 }

@@ -12,7 +12,7 @@ class SummaryService {
 
     GrailsApplication grailsApplication
 
-    // returns a smple Map of relevant KBE metric KEY Value pairs.
+    // returns a result Map with summary: Map of relevant KBE metric KEY Value pairs, and operationalExpensesByType: Map<String:BigDecimal> breakdown of the operationalExpense types.
     Map revenueExpenseSummaryValues( LocalDate startDate, LocalDate endDate, ReportByType reportByType) {
         assert startDate && endDate, "revenueExpenseSummary does not support null start or end dates: start=$startDate, end=$endDate"
 
@@ -44,10 +44,12 @@ class SummaryService {
         BigDecimal commissions = results[0]?:0.00
 
         // Get the operationalExpense by type and total for the specified period
-        Map operationalExpensesByType = operationalExpenseSummary(startDate, endDate, reportByType, false)
+        Map operationalExpensesResults = operationalExpenseSummary(startDate, endDate, reportByType, false).rows
+        Map operationalExpensesByType = [:]
         BigDecimal operationalExpenses = 0.00
-        operationalExpensesByType.rows.each { key, val ->
+        operationalExpensesResults.each { String key, List val ->
             operationalExpenses += val[0]
+            operationalExpensesByType << [ (key) : val[0] ]
         }
 
         // Calculate derived values
@@ -61,12 +63,12 @@ class SummaryService {
         BigDecimal netIncome = netProceeds - setAside
 
         // return the resultsin an ordered map
-        [
+        Map summary = [
                 grossSales: grossSales,
                 costOfSales: costOfSales,
                 grossProfit: grossProfit,
                 otherIncome: commissions,
-                directCompetitionIncome: 0,
+                directCompetitionIncome: 0.00,
                 adjustedGrossProfit: adjustedGrossProfit,
                 operationalExpenses: operationalExpenses,
                 operationalExpensesByType: operationalExpensesByType,
@@ -74,7 +76,8 @@ class SummaryService {
                 setAside: setAside,
                 netIncome: netIncome,
                 operatorSalaries: netIncome,
-        ]
+        ] as TreeMap
+        [ summary: summary, operationalExpensesByType: operationalExpensesByType ]
     }
 
     List<String> columnHeadersForSummary( LocalDate startDate, LocalDate endDate, ReportByType reportByType, Boolean includeStartAndEndDatesOnly  ) {
@@ -136,7 +139,7 @@ columnHeaders
         // Get the period / column values for each specified period.
         List<Map> columnValues = []
         columnHeaders.each { ColumnHeader columnHeader ->
-            columnValues << revenueExpenseSummaryValues(columnHeader.startDate, columnHeader.endDate, reportByType)
+            columnValues << revenueExpenseSummaryValues(columnHeader.startDate, columnHeader.endDate, reportByType).summary
         }
 
         // return the resultsin an ordered map

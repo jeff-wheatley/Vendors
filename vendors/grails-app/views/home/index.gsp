@@ -181,7 +181,8 @@
             </g:hasErrors>
             <g:form url="[controller:'home']" method="POST">
                 <fieldset class="form">
-                <g:select name="selectedCycle" from="${command.recentCycles}" value="${command.recentCycles[0]}"/>
+                <label for="command.cycle">Month to Report</label>
+                <g:select name="command.cycle" from="${command.recentCycles}" value="${command.recentCycles[0]}"/>
              </fieldset>
                 <fieldset class="buttons">
                     <g:actionSubmit value="${message(code: 'vendors.view.kbe.report')}" action="kbeReport" />

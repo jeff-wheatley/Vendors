@@ -1,6 +1,7 @@
 package com.hcs
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class Commission {
 
@@ -17,5 +18,5 @@ class Commission {
         amount(nullable: false)
     }
 
-    String toString() { "Commission \$$amount for $commissionVendor on $dayOfCommission"}
+    String toString() { "Commission \$$amount for $commissionVendor on ${dayOfCommission.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}"}
 }
