@@ -10,7 +10,7 @@ class ReportService {
 
 
     List<ReportCycle> getRecentCycles() {
-ReportCycle cycle = ReportCycle.currentCycle
+ReportCycle cycle = CurrentCycle.currentCycle.cycle
         assert cycle, 'A ReportCycle *must* be set as the *currentCycle* to get recentCycles from the ReportService.'
 
         // create a list with the current and several previous cycles

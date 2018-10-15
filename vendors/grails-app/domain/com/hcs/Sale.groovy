@@ -15,5 +15,5 @@ class Sale {
         amount(nullable: false)
     }
 
-    String toString() { "Sale \$$amount on ${dayOfSale.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}" }
+    String toString() { "Sale \$$amount on ${dayOfSale?.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}" }
 }

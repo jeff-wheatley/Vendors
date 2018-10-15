@@ -181,8 +181,8 @@
             </g:hasErrors>
             <g:form url="[controller:'home']" method="POST">
                 <fieldset class="form">
-                <label for="command.cycle">Month to Report</label>
-                <g:select name="command.cycle" from="${command.recentCycles}" value="${command.recentCycles[0]}"/>
+                <label for="command.currentCycle">Month to Report</label>
+                <g:select name="command.currentCycle" from="${command.recentCycles}" value="${command.recentCycles[0]}"/>
              </fieldset>
                 <fieldset class="buttons">
                     <g:actionSubmit value="${message(code: 'vendors.view.kbe.report')}" action="kbeReport" />
@@ -194,6 +194,32 @@
         </div>
 
         </div>
+
+
+<div id="reportCycle" class="content scaffold-create" role="main">
+        <h1><g:message code="vendors.cycle.header" /></h1>
+            <g:if test="${flash.message}">
+            <div class="message" role="status">${flash.message}</div>
+            </g:if>
+            <g:hasErrors bean="${params.reportCycleErrors}">
+            <ul class="errors" role="alert">
+                <g:eachError bean="${params.reportCycleErrors}" var="error">
+                <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
+                </g:eachError>
+            </ul>
+            </g:hasErrors>
+            <g:form url="[controller:'home', action:'updateCycle']" method="POST">
+                <fieldset class="buttons">
+                <g:if test="${command.currentCycleClosed}">
+                <g:submitButton name="submit" value="${message(code: 'vendors.advance.cycle', args:[command.nextCycle])}" />
+                    </g:if>
+                    <g:elseif test="${command.currentCycleCloseElegible}">
+<g:submitButton name="submit" value="${message(code: 'vendors.close.cycle', args:[command.currentCycle])}" />
+                    </g:elseif>
+                    </fieldset>
+            </g:form>
+</div>
+
 
         <script>
             function cycleChanged(cycle) {

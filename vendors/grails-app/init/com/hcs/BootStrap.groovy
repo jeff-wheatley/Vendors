@@ -4,14 +4,24 @@ import java.time.LocalDate
 import grails.util.Environment
 
 class BootStrap {
+    ReportCycleService reportCycleService
+    CurrentCycleService currentCycleService
 
     def init = { servletContext ->
         LocalDate date = LocalDate.now()
+        date = date.minusMonths(3)
 
-        // insure we have a current ReportCycle singleton
-        ReportCycle currentCycle = ReportCycle.get(1)
+        // insure we have a CurrentCycle singleton
+        CurrentCycle currentCycle = CurrentCycle.currentCycle
         if( !currentCycle ) {
-            new ReportCycle( cycle: date).save(flush: true)
+            ReportCycle reportCycle = ReportCycle.get(1)
+                    if( !reportCycle ) {
+                        reportCycle = new ReportCycle()
+                        reportCycle.setCycle( date )
+                        reportCycleService.save( reportCycle )
+                    }
+            currentCycle = new CurrentCycle( cycle: reportCycle )
+            currentCycleService.save( currentCycle )
         }
 
         if(Environment.current == Environment.DEVELOPMENT) {

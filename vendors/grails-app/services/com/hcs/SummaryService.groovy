@@ -80,6 +80,18 @@ class SummaryService {
         [ summary: summary, operationalExpensesByType: operationalExpensesByType ]
     }
 
+    Map alignDatesForReportByType( LocalDate startDate, LocalDate endDate, ReportByType reportByType ) {
+        Map dates = [startDate: startDate, endDate: endDate]
+        switch( reportByType ) {
+            case ReportByType.DAY: break; // dates already correct
+            case ReportByType.MONTH: dates.startDate = dates.startDate.withDayOfMonth(1); dates.endDate = dates.endDate.withDayOfMonth( dates.endDate.lengthOfMonth()); break;
+            case ReportByType.YEAR: dates.startDate = dates.startDate.withDayOfYear(1); dates.endDate = dates.endDate.withDayOfYear( dates.endDate.lengthOfYear()); break;
+            default: assert false, "ReportByType ($reportByType) is not supported."
+        }
+
+        dates
+    }
+
     List<String> columnHeadersForSummary( LocalDate startDate, LocalDate endDate, ReportByType reportByType, Boolean includeStartAndEndDatesOnly  ) {
         assert startDate && endDate && reportByType, "startDate, endDate and reportByType values may not be null ($startDate, $endDate, $reportByType)"
 

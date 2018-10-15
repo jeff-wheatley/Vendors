@@ -99,7 +99,7 @@ environments:
     development:
         dataSource:
             dbCreate: none
-            url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+            url: 'jdbc:h2:${HOME}/kbe/devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE'
     test:
         dataSource:
             dbCreate: update
@@ -132,6 +132,12 @@ grails.plugin.databasemigration:
     updateOnStart: true
     updateOnStartFileName: changelog.groovy
 
+---
+grails.databinding.dateFormats:
+        - yyyy-MMM-dd
+                - yyyy-MM-dd
+        - dd-MM-yyyy
+default.date.format: yyyy-MMM-dd
 
 ---
 vendors:
