@@ -82,18 +82,14 @@ params.max = 20
     }
 
     def updateCycle( HomeCommand command ) {
-        System.out.println("advanceCycle start")
         ReportCycle cycle = CurrentCycle.currentCycle.cycle
         try {
             if( !cycle.closed ) {
                 cycle = cycleService.closeCycle().cycle
-                System.out.println("advanceCycle completed the cycle close")
             } else {
                 cycle = cycleService.advanceCycle().cycle
-                System.out.println("advanceCycle completed the advance")
             }
         } catch (ValidationException | IllegalArgumentException | DateTimeParseException | CycleServiceException e) {
-            System.out.println("advanceCycle exception $e")
             flash.message ="${e.message}"
             params.reportCycleErrors = cycle.errors
             redirect( action:'index' )
@@ -107,7 +103,6 @@ params.max = 20
             }
             '*' { respond command, [status: CREATED] }
         }
-        System.out.println("advanceCycle end")
         }
 
     def saveSale(Sale sale) {
@@ -164,7 +159,6 @@ params.max = 20
 
 
     def saveCostOfSale(CostOfSale costOfSale) {
-        System.out.println("starting saveCostOfSale")
         if (costOfSale == null) {
             notFound()
             return
@@ -180,7 +174,6 @@ params.max = 20
             redirect( action:'index' )
             return
         }
-        System.out.println("Completing saveCostOfSale")
 
         request.withFormat {
             form multipartForm {
@@ -189,7 +182,6 @@ params.max = 20
             }
             '*' { respond costOfSale, [status: CREATED] }
         }
-        System.out.println("done with saveSale")
     }
 
 

@@ -8,6 +8,7 @@ class BootStrap {
     CurrentCycleService currentCycleService
 
     def init = { servletContext ->
+        Boolean newDatabase = false
         LocalDate date = LocalDate.now()
         date = date.minusMonths(3)
 
@@ -22,9 +23,10 @@ class BootStrap {
                     }
             currentCycle = new CurrentCycle( cycle: reportCycle )
             currentCycleService.save( currentCycle )
+            newDatabase = true
         }
 
-        if(Environment.current == Environment.DEVELOPMENT) {
+        if( newDatabase && Environment.current == Environment.DEVELOPMENT) {
 
 
             // Create some reference vendors and commissionVendors
