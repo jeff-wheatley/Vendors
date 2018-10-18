@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter
 class Commission {
 
     LocalDate dayOfCommission
+    String day
+    String month
+    String year
     BigDecimal amount
 
 
@@ -16,6 +19,13 @@ class Commission {
     static constraints = {
         dayOfCommission(nullable: false)
         amount(nullable: false)
+    }
+
+
+    static mapping = {
+        day formula: 'FORMATDATETIME(DAY_OF_COMMISSION, \'yyyy-MMM-dd\')'
+        month formula: 'FORMATDATETIME(DAY_OF_COMMISSION, \'yyyy-MMM\')'
+        year formula: 'FORMATDATETIME(DAY_OF_COMMISSION, \'yyyy\')'
     }
 
     String toString() { "Commission \$$amount for $commissionVendor on ${dayOfCommission.format(DateTimeFormatter.ofPattern('yyyy-MMM-dd'))}"}

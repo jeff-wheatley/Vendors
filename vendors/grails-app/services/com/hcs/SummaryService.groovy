@@ -12,7 +12,7 @@ class SummaryService {
 
     GrailsApplication grailsApplication
 
-    // returns a result Map with summary: Map of relevant KBE metric KEY Value pairs, and operationalExpensesByType: Map<String:BigDecimal> breakdown of the operationalExpense types.
+    // For a single period, returns a result Map with summary: Map of relevant KBE metric KEY Value pairs, and operationalExpensesByType: Map<String:BigDecimal> breakdown of the operationalExpense types.
     Map revenueExpenseSummaryValues( LocalDate startDate, LocalDate endDate, ReportByType reportByType) {
         assert startDate && endDate, "revenueExpenseSummary does not support null start or end dates: start=$startDate, end=$endDate"
 
@@ -92,6 +92,7 @@ class SummaryService {
         dates
     }
 
+    // Determine and create the column headers to be displayed for a summary report
     List<String> columnHeadersForSummary( LocalDate startDate, LocalDate endDate, ReportByType reportByType, Boolean includeStartAndEndDatesOnly  ) {
         assert startDate && endDate && reportByType, "startDate, endDate and reportByType values may not be null ($startDate, $endDate, $reportByType)"
 
@@ -143,7 +144,7 @@ columnHeaders
         values
     }
 
-    // return [collumnHeaders:List<String>, rows: [<rowKey> : List<BigDecimal>]] representing the table data
+    // return [collumnHeaders:List<String>, rows: [<rowKey> : List<BigDecimal>]] representing the table data for 1 or more periods of revenue expense
     Map revenueExpenseSummary( LocalDate startDate, LocalDate endDate, ReportByType reportByType, Boolean includeStartAndEndDatesOnly  ) {
         // How many periods (sets of values) are specified? (these will be our data columns)
         List<ColumnHeader> columnHeaders = columnHeadersForSummary( startDate, endDate, reportByType, includeStartAndEndDatesOnly)
@@ -201,9 +202,16 @@ columnHeaders
             CostOfSale.withCriteria {
                 projections {
                     groupProperty 'vendor'
+                    /* switch(reportByType) {
+                        case ReportByType.DAY: groupProperty 'day'; break
+                        case ReportByType.MONTH: groupProperty 'month'; break
+                        case ReportByType.YEAR: groupProperty 'year'; break
+                    }
+                    */
+
                     sum 'amount'
                 }
-                between('dayOfCost', startDate, endDate)
+                between('dayOfCost', start, end)
             }
         })
     }
@@ -215,9 +223,15 @@ columnHeaders
             OperationalExpense.withCriteria {
                 projections {
                     groupProperty 'operationalExpenseType'
+                    /* switch(reportByType) {
+                        case ReportByType.DAY: groupProperty 'day'; break
+                        case ReportByType.MONTH: groupProperty 'month'; break
+                        case ReportByType.YEAR: groupProperty 'year'; break
+                    }
+                    */
                     sum 'amount'
                 }
-                between('dayOfExpense', startDate, endDate)
+                between('dayOfExpense', start, end)
             }
         })
     }
@@ -230,6 +244,13 @@ columnHeaders
             Commission.withCriteria {
                 projections {
                     groupProperty 'commissionVendor'
+                    /* switch(reportByType) {
+                        case ReportByType.DAY: groupProperty 'day'; break
+                        case ReportByType.MONTH: groupProperty 'month'; break
+                        case ReportByType.YEAR: groupProperty 'year'; break
+                    }
+                    */
+
                     sum 'amount'
                 }
                 between('dayOfCommission', start, end)
