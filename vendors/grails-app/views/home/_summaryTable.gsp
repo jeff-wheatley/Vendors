@@ -8,8 +8,8 @@
 <th/>
 <g:each in="${data.columnHeaders}" var="header">
 <th>${header}</th>
-</tr>
 </g:each>
+</tr>
 
 <g:each in="${data.rows}" var="row">
 <tr>
